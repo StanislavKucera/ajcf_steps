@@ -118,6 +118,7 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "resumable": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "charconv": "cpp"
     }
 }

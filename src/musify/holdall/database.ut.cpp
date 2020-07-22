@@ -70,9 +70,10 @@ namespace musify { namespace database {
         save_new_database_lines(database_file_path, lines);
         Database& database = singleton::Singleton<Database>::get_instance();
         database.clear();
+        MusicalFactoryWithCreators factory{};
 
         // ACT
-        const auto result = load_database(database_file_path, database);
+        const auto result = load_database(database_file_path, database, factory);
 
         // ASSERT
         REQUIRE(result == LoadingResult::UnknownLineType);
@@ -91,9 +92,10 @@ namespace musify { namespace database {
         save_new_database_lines(database_file_path, lines);
         Database& database = singleton::Singleton<Database>::get_instance();
         database.clear();
+        MusicalFactoryWithCreators factory{};
 
         // ACT
-        const auto result = load_database(database_file_path, database);
+        const auto result = load_database(database_file_path, database, factory);
 
         // ASSERT
         REQUIRE(result == LoadingResult::IncompleteLine);
@@ -111,9 +113,10 @@ namespace musify { namespace database {
         save_new_database_lines(database_file_path, lines);
         Database& database = singleton::Singleton<Database>::get_instance();
         database.clear();
+        MusicalFactoryWithCreators factory{};
 
         // ACT
-        const auto result = load_database(database_file_path, database);
+        const auto result = load_database(database_file_path, database, factory);
 
         // ASSERT
         REQUIRE(result == LoadingResult::Ok);
@@ -151,58 +154,6 @@ namespace musify { namespace database {
     TEST_CASE("TEST musify::database::display_music_entities with songs", "[database]")
     {
         // TODO
-    }
-
-    TEST_CASE("TEST musify::database::Database::find_things", "[database]")
-    {
-        // ARRANGE
-        Database& database = singleton::Singleton<Database>::get_instance();
-        database.clear();
-        database.insert_thing(MusicalFactory{}.create_thing("Artist", "U2"));
-        database.insert_thing(MusicalFactory{}.create_thing("Album", "War"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Sunday Bloody Sunday"));
-        // Insert more dummy songs to be confident that we fixed the "realloc bug"
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 1"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 2"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 3"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 4"));
-
-        // ACT
-        const auto things = database.find_things("Sunday Bloody Sunday");
-
-        // ASSERT
-        REQUIRE(things.size() == 1);
-        REQUIRE(things[0].get().name() == "Sunday Bloody Sunday");
-        REQUIRE(typeid(things[0].get()) == typeid(Song));
-    }
-
-    TEST_CASE("TEST musify::database::Database::visit_things", "[database]")
-    {
-        // ARRANGE
-        Database& database = singleton::Singleton<Database>::get_instance();
-        database.clear();
-        database.insert_thing(MusicalFactory{}.create_thing("Artist", "U2"));
-        database.insert_thing(MusicalFactory{}.create_thing("Album", "War"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Sunday Bloody Sunday"));
-        // Insert more dummy songs to be confident that we fixed the "realloc bug"
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 1"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 2"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 3"));
-        database.insert_thing(MusicalFactory{}.create_thing("Song", "Dummy 4"));
-        std::vector<std::pair<std::string, std::type_index>> names_and_typeinfos{};
-
-        // ACT
-        database.visit_things([&](const auto& thing) { names_and_typeinfos.push_back({thing.name(), typeid(thing)}); });
-
-        // ASSERT
-        auto expected = std::vector<std::pair<std::string, std::type_index>>{
-            {"U2", typeid(Artist)},    {"War", typeid(Album)},    {"Sunday Bloody Sunday", typeid(Song)},
-            {"Dummy 1", typeid(Song)}, {"Dummy 2", typeid(Song)}, {"Dummy 3", typeid(Song)},
-            {"Dummy 4", typeid(Song)},
-        };
-        std::sort(expected.begin(), expected.end());
-        std::sort(names_and_typeinfos.begin(), names_and_typeinfos.end());
-        REQUIRE(names_and_typeinfos == expected);
     }
 
 }} // namespace musify::database

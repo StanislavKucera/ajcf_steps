@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "musical_factory.hpp"
 #include "musical_thing.hpp"
 #include "singleton.hpp"
 #include <string_view>
@@ -90,6 +91,7 @@ namespace musify { namespace database {
         std::multimap<std::string, std::unique_ptr<MusicalThing>> m_things{};
     };
 
-    LoadingResult load_database(const std::filesystem::path& database_file_path, Database& database);
+    LoadingResult load_database(const std::filesystem::path& database_file_path, Database& database,
+                                MusicalFactory& factory);
 
 }} // namespace musify::database

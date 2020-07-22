@@ -12,15 +12,13 @@ namespace musify { namespace database {
 
     enum class LoadingResult;
     class Database;
-    class Artist;
-    class Album;
-    class Song;
+    class MusicalFactory;
 
     std::vector<std::string> ask_new_database_lines(std::ostream& output_stream, std::istream& input_stream);
 
     std::pair<std::string, std::string> parse_until(const std::string& text, char separator);
 
-    LoadingResult parse_and_load_database_line(const std::string& line, Database& database);
+    LoadingResult parse_and_load_database_line(const std::string& line, Database& database, MusicalFactory& factory);
 
     template <typename NameT, typename EntityT>
     const auto& get_entity_only(const std::pair<const NameT, std::unique_ptr<EntityT>>& name_and_entity)
@@ -47,11 +45,5 @@ namespace musify { namespace database {
         output_stream << "--> " << music_entities.size() << " things\n";
         output_stream << "-----------------\n";
     }
-
-    bool operator==(const Artist& artist1, const Artist& artist2);
-
-    bool operator==(const Album& album1, const Album& album2);
-
-    bool operator==(const Song& song1, const Song& song2);
 
 }} // namespace musify::database

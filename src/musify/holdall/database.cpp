@@ -25,7 +25,8 @@ namespace musify { namespace database {
             database_file << database_line << '\n';
     }
 
-    LoadingResult load_database(const std::filesystem::path& database_file_path, Database& database)
+    LoadingResult load_database(const std::filesystem::path& database_file_path, Database& database,
+                                MusicalFactory& factory)
     {
         if (!std::filesystem::is_regular_file(database_file_path))
             return LoadingResult::FileNotFound;
@@ -35,7 +36,7 @@ namespace musify { namespace database {
         std::string database_line;
         while (std::getline(ifs, database_line))
         {
-            const LoadingResult loading_result = parse_and_load_database_line(database_line, database);
+            const LoadingResult loading_result = parse_and_load_database_line(database_line, database, factory);
             if (loading_result != LoadingResult::Ok)
                 return loading_result;
         }

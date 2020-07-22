@@ -15,10 +15,11 @@ inline bool option_quit()
     return false;
 }
 
-inline bool option_load_database(const fs::path& database_file_path, mdb::Database& database)
+inline bool option_load_database(const fs::path& database_file_path, mdb::Database& database,
+                                 mdb::MusicalFactory& factory)
 {
     std::cout << "Loading database file " << database_file_path << "...\n";
-    const auto result = mdb::load_database(database_file_path, database);
+    const auto result = mdb::load_database(database_file_path, database, factory);
     switch (result)
     {
     case mdb::LoadingResult::FileNotFound:

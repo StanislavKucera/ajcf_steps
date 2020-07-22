@@ -24,10 +24,12 @@ std::optional<fs::path> check_arguments(int argc, char* argv[])
 void menu_loop(const fs::path& database_file_path)
 {
     mdb::Database& database = ms::Singleton<mdb::Database>::get_instance();
+    mdb::MusicalFactoryWithIfElse factory{};
 
     mm::Menu menu{
         mm::MenuOption{'Q', "Quit the application", option_quit},
-        mm::MenuOption{'L', "Load the database", [&] { return option_load_database(database_file_path, database); }},
+        mm::MenuOption{'L', "Load the database",
+                       [&] { return option_load_database(database_file_path, database, factory); }},
         mm::MenuOption{'D', "Display the database", [&] { return option_display_database(database); }},
         mm::MenuOption{'A', "Find the Artist 'Oasis'", [&] { return option_find_artist(database, "Oasis"); }},
         mm::MenuOption{'B', "Find the alBum 'Parachutes'", [&] { return option_find_album(database, "Parachutes"); }},

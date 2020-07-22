@@ -1,5 +1,7 @@
 
 #include "musical_things.hpp"
+#include "musical_factory.hpp"
+#include "singleton.hpp"
 #include <iostream>
 
 namespace musify::database {
@@ -14,6 +16,8 @@ namespace musify::database {
         const auto text_after_separator = text.substr(position_separator + 1);
         return {text_before_separator, text_after_separator};
     }
+
+    ClassRegistrator<Artist> artist_class_registrator{};
 
     void Artist::details_to_stream(std::ostream& output_stream) const
     {
@@ -43,6 +47,8 @@ namespace musify::database {
         return ParsingResult::Ok;
     }
 
+    ClassRegistrator<Album> album_class_registrator{};
+
     void Album::details_to_stream(std::ostream& output_stream) const
     {
         output_stream << m_artist_name << ", " << m_date;
@@ -60,6 +66,8 @@ namespace musify::database {
         m_date = date_opt.value();
         return ParsingResult::Ok;
     }
+
+    ClassRegistrator<Song> song_class_registrator{};
 
     void Song::details_to_stream(std::ostream& output_stream) const
     {

@@ -38,7 +38,7 @@ namespace musify { namespace database {
         return {text_before_separator, text_after_separator};
     }
 
-    LoadingResult parse_and_load_database_line(const std::string& line, Database& database)
+    LoadingResult parse_and_load_database_line(const std::string& line, Database& database, MusicalFactory& factory)
     {
         if (line.empty())
             return LoadingResult::Ok;
@@ -49,7 +49,7 @@ namespace musify { namespace database {
         const auto [thing_type_label, thing_data] = parse_until(line, '=');
         const auto [thing_name, thing_details] = parse_until(thing_data, ',');
 
-        auto thing = MusicalFactory{}.create_thing(thing_type_label, thing_name);
+        auto thing = factory.create_thing(thing_type_label, thing_name);
         if (!thing)
             return LoadingResult::UnknownLineType;
 
