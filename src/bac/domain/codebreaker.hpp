@@ -28,7 +28,7 @@ namespace bac {
     };
 
     // Codebreaker as computer (IA)
-    class ComputerCodebreaker : public Codebreaker
+    class RandomComputerCodebreaker : public Codebreaker
     {
     public:
         Code ask_attempt(std::ostream& out, std::istream& in, const Options& options,
@@ -36,6 +36,22 @@ namespace bac {
 
     private:
         PossibleCodes m_remaining_possible_codes{};
+    };
+
+    // Codebreaker as computer (IA)
+    class GreedyComputerCodebreaker : public Codebreaker
+    {
+    public:
+        Code ask_attempt(std::ostream& out, std::istream& in, const Options& options,
+                         const std::vector<AttemptAndFeedback>& attempts_and_feedbacks) final;
+    };
+
+    // Codebreaker as computer (IA)
+    class RandomAndGreedyComputerCodebreaker : public Codebreaker
+    {
+    public:
+        Code ask_attempt(std::ostream& out, std::istream& in, const Options& options,
+                         const std::vector<AttemptAndFeedback>& attempts_and_feedbacks) final;
     };
 
 } // namespace bac

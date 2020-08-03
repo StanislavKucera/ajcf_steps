@@ -13,21 +13,17 @@ namespace bac {
     struct State
     {
         std::unique_ptr<Codebreaker> codebreaker{};
-        Codemaker codemaker{};
-        Board board{};
+        std::unique_ptr<Codemaker> codemaker{};
+        std::unique_ptr<Board> board{};
     };
 
-    // Create a randomly-generated secret code made of allowed characters
     Code generate_random_secret_code(const Options& options);
 
-    // Validate that a codebreaker's attempt:
-    // - Contains the required number characters
-    // - Contains only allowed characters
     bool validate_attempt(const Options& options, const Code& attempt);
 
-    // Compare a codebreaker's attempt with the secret code
-    // and give the corresponding number of bulls and cows
     Feedback compare_attempt_with_secret_code(const Code& attempt, const Code& secret_code);
+
+    Feedback compare_attempt_with_secret_code(const Code& attempt, const Code& secret_code, size_t len);
 
     // Test if the codemaker has won
     bool has_codemaker_won(const Options& options, const Board& board);

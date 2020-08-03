@@ -9,16 +9,80 @@ namespace bac {
 
     struct Options;
 
-    // Code (secret code or attempt)
     struct Code
     {
-        // Sequence of allowed characters
+        Code() = default;
+        Code(const Code&) = default;
+        Code(Code&&) = default;
+        Code& operator=(const Code&) = default;
+        Code& operator=(Code&&) = default;
+        ~Code() = default;
+        Code(const std::string& str) : value(str)
+        {
+        }
+        Code(std::string&& str) : value(std::move(str))
+        {
+        }
+        Code(size_t len, char c) : value(len, c)
+        {
+        }
+        auto begin()
+        {
+            return value.begin();
+        }
+        auto begin() const
+        {
+            return value.begin();
+        }
+        auto end()
+        {
+            return value.end();
+        }
+        auto end() const
+        {
+            return value.end();
+        }
+        std::string::reference operator[](size_t i)
+        {
+            return value[i];
+        }
+        auto operator[](size_t i) const
+        {
+            return value[i];
+        }
+        auto size() const
+        {
+            return value.size();
+        }
+        auto empty() const
+        {
+            return value.empty();
+        }
+        auto operator==(const Code& code) const
+        {
+            return value == code.value;
+        }
+        auto operator!=(const Code& code) const
+        {
+            return value != code.value;
+        }
         std::string value{};
     };
 
-    // Codemaker's Feedback
     struct Feedback
     {
+        auto operator==(const Feedback& fb) const
+        {
+            return bulls == fb.bulls && cows == fb.cows;
+        }
+        auto operator!=(const Feedback& fb) const
+        {
+            return bulls != fb.bulls || cows != fb.cows;
+        }
+        auto operator<(const Feedback& fb) const
+        {
+            return bulls < fb.bulls || (bulls == fb.bulls && cows < fb.cows);
+        }
         // Number of good and well-placed characters
         unsigned int bulls{};
         // Number of good but not well-placed characters
@@ -28,21 +92,8 @@ namespace bac {
     // Codebreaker's attempt and associated codemaker's feedback
     struct AttemptAndFeedback
     {
-        // Code Breaker's attempt
         Code attempt{};
-        // Code Maker's feedback telling how many bulls and cows the attempts contains
         Feedback feedback{};
-    };
-
-    // Board containing:
-    // - The "hidden" secret code
-    // - The list of all codebreaker's attempts and codemaker's feedbacks
-    struct Board
-    {
-        // Codemaker's secret code
-        Code secret_code{};
-        // Codebreaker's attempts and Codemaker's feedbacks
-        std::vector<AttemptAndFeedback> attempts_and_feedbacks{};
     };
 
     enum class DisplaySecretCode
@@ -51,8 +102,20 @@ namespace bac {
         Yes,
     };
 
-    // Display the list of attempts and feedbacks, and optionally the secret code
-    void display_board(std::ostream& out, const Options& options, const Board& board,
-                       DisplaySecretCode display_secret_code);
+    struct Board
+    {
+        Code secret_code{};
+        std::vector<AttemptAndFeedback> attempts_and_feedbacks{};
+        virtual void display(std::ostream&, const Options&, DisplaySecretCode) const;
+    };
+
+    struct ComputerBoard : public Board
+    {
+        void display(std::ostream&, const Options&, DisplaySecretCode) const final;
+    };
+
+    void display_board(std::ostream&, const Options&, const Board&, DisplaySecretCode);
+
+    void display_board_line_by_line(std::ostream&, const Options&, const Board&, DisplaySecretCode);
 
 } // namespace bac
